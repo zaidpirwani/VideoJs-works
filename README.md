@@ -119,6 +119,6 @@ This demo shows that plain JS on the native tag gives the same control without a
 
 ## License
 
-[MIT](LICENSE). If you use this code, a link back to https://github.com/zaidpirwani/VideoJs-works is appreciated.
+[MIT](LICENSE).
 
 The license covers the code and documentation in this repository only. It does not cover the PSL videos, posters or other content that the demo links to on the PSL CDN.

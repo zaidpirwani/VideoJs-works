@@ -2,6 +2,8 @@
 
 ## 2026-11-02
 
+- **ai-docs: add MIT license** - `LICENSE` file. License section in the README with a link-back request; PSL media excluded.
+
 - **ai-docs: mark README as AI-generated** - Note at the top of the README.
 - **ai-chore: ignore .idea/vcs.xml** - Root `.gitignore`.
 

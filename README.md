@@ -116,3 +116,9 @@ Mirror uses `transform: scaleX(-1)` on the video, so it also reverses any text b
 - **Video.js 8** (legacy, maintained until October 2028): the control bar is flat and you can restyle it with CSS. The bar sits on the video by default.
 
 This demo shows that plain JS on the native tag gives the same control without a library. Change to a library only if you need HLS or DASH streaming, ads or analytics plugins.
+
+## License
+
+[MIT](LICENSE). If you use this code, a link back to https://github.com/zaidpirwani/VideoJs-works is appreciated.
+
+The license covers the code and documentation in this repository only. It does not cover the PSL videos, posters or other content that the demo links to on the PSL CDN.

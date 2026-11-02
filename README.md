@@ -1,5 +1,7 @@
 # PSL video player - demo
 
+> **AI-generated.** An AI assistant (Claude) wrote the code, the documentation and the sign-language site review in this repository. A person directed and reviewed the work. Check it before you use it in production.
+
 A demo for developers, not production code. It shows player layout and UX options for the psl.org.pk video player (Pakistan Sign Language dictionary, stories and lessons).
 
 The player uses the native `<video>` tag with about 300 lines of plain JS and CSS. It has no library, no build step and no gradient.

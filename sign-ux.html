@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PSL Sign UX Options</title>
+  <link rel="stylesheet" href="psl-player.css">
+  <style>
+    :root { --bg: #f2f4f7; --card: #fff; --ink: #12161c; --muted: #5b6573; --line: #e3e7ec; --code: #f6f8fa; --accent: #01a54b; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 16px 80px; }
+    h1 { font-size: 26px; margin: 0 0 4px; }
+    h2 { font-size: 18px; margin: 0; }
+    h3 { font-size: 15px; margin: 16px 0 6px; }
+    a { color: var(--accent); }
+    .lead { color: var(--muted); margin: 0 0 24px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .card-head { display: flex; gap: 10px; align-items: baseline; margin-bottom: 6px; }
+    .tag { font-size: 12px; font-weight: 700; color: #fff; background: #3b4552; border-radius: 4px; padding: 2px 7px; }
+    .card > p { margin: 0 0 14px; color: var(--muted); }
+    .src { font-size: 13px; color: var(--muted); margin-top: 12px; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    td, th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-weight: 600; }
+    .scroll { overflow-x: auto; }
+    .yes { color: var(--accent); font-weight: 600; }
+    ul.tight { margin: 4px 0 0; padding-left: 18px; }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 720px) { .two { grid-template-columns: 1fr; } }
+    .ur { font-family: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Segoe UI", serif; }
+
+    /* 1. Word page */
+    .word { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+    @media (max-width: 720px) { .word { grid-template-columns: 1fr; } }
+    .titles .en { font-size: 28px; font-weight: 800; text-transform: capitalize; margin: 0; }
+    .titles .ur { font-size: 26px; margin: 4px 0; }
+    .titles .roman { color: var(--muted); margin: 0 0 12px; }
+    .facts { font-size: 13px; color: var(--muted); }
+    .facts li { margin-bottom: 4px; }
+
+    /* 2. Variant tabs */
+    .tabs { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .tabs button {
+      font: inherit; font-size: 14px; padding: 8px 14px; min-height: 40px; border-radius: 8px; cursor: pointer;
+      border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    }
+    .tabs button[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+    /* 3. Grid */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+    .tile {
+      display: block; padding: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+      background: var(--card); cursor: pointer; text-align: left; font: inherit; color: inherit;
+    }
+    .tile:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    .tile video { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #000; }
+    .tile span { display: flex; justify-content: space-between; padding: 8px 10px; font-weight: 600; text-transform: capitalize; }
+    .tile .ur { font-weight: 400; }
+
+    /* 4. Story */
+    .story { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; }
+    @media (max-width: 720px) { .story { grid-template-columns: 1fr; } }
+    .lang { display: flex; gap: 6px; margin-bottom: 10px; }
+    .transcript { border: 1px solid var(--line); border-radius: 10px; max-height: 360px; overflow-y: auto; padding: 6px; }
+    .transcript button {
+      display: grid; grid-template-columns: 48px 1fr; gap: 8px; width: 100%; text-align: left; padding: 8px; border: 0;
+      border-radius: 6px; background: none; font: inherit; color: inherit; cursor: pointer;
+    }
+    .transcript button:hover { background: var(--code); }
+    .transcript button.is-active { background: #e6f6ed; box-shadow: inset 3px 0 0 var(--accent); }
+    .transcript time { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 13px; }
+
+    /* 5. Compare */
+    .sync { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; }
+    .sync button {
+      font: inherit; font-size: 14px; min-height: 40px; padding: 0 14px; border-radius: 99px; cursor: pointer;
+      border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    }
+    .sync button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .sync .primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .cap { font-weight: 600; margin: 0 0 6px; text-transform: capitalize; }
+
+    /* 6. Practice */
+    .cam { position: relative; aspect-ratio: 16 / 9; background: #1b1f24; border-radius: 10px; overflow: hidden; display: grid; place-items: center; color: #c9d1d9; text-align: center; }
+    .cam video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+    .cam button { position: relative; font: inherit; min-height: 44px; padding: 0 18px; border: 0; border-radius: 99px; background: var(--accent); color: #fff; cursor: pointer; }
+    .cam p { position: relative; margin: 8px 16px 0; font-size: 13px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <p><a href="index.html">&larr; Player layouts</a></p>
+  <h1>Sign-language UX options</h1>
+  <p class="lead">Demo for devs, based on a review of 14 sign-language and deaf-focused sites. Clips are real PSL dictionary videos, linked directly from the PSL CDN.
+    Urdu and Roman Urdu titles for colours other than "black", and all caption and transcript text, are sample text.</p>
+
+  <!-- Review summary -->
+  <section class="card">
+    <h2>Review summary</h2>
+    <div class="scroll">
+      <table>
+        <tr><th>Site</th><th>Player</th><th>Controls</th><th>Speeds</th><th>Loop</th><th>Frame step</th><th>Autoplay</th><th>Notable</th></tr>
+        <tr><td>psl.org.pk (now)</td><td>native</td><td>browser, on video</td><td>-</td><td>-</td><td>-</td><td>yes, not muted (often blocked)</td><td>EN/UR/Roman titles, download</td></tr>
+        <tr><td>SignASL</td><td>native + custom</td><td>below</td><td>0.5, 1</td><td class="yes">toggle</td><td>-</td><td>muted</td><td>several signers per word</td></tr>
+        <tr><td>Spread The Sign</td><td>native</td><td>speed menu only</td><td>25-100%</td><td class="yes">always</td><td>-</td><td>muted</td><td>compare 2 sign languages</td></tr>
+        <tr><td>Auslan Signbank</td><td>Video.js</td><td>on video</td><td>0.25, 0.5, 1, 1.5</td><td class="yes">plugin</td><td>-</td><td>muted</td><td>volume button removed</td></tr>
+        <tr><td>Lifeprint</td><td>YouTube + custom</td><td>below</td><td>.25, .5, 1</td><td>replay</td><td class="yes">yes</td><td>no</td><td>full keyboard set, signer switch</td></tr>
+        <tr><td>Signing Savvy</td><td>Video.js</td><td>below</td><td>members</td><td>members</td><td>-</td><td>off</td><td>saved player preferences</td></tr>
+        <tr><td>DCMP</td><td>custom</td><td>lower right</td><td>0.5-2</td><td>-</td><td>-</td><td>previews muted</td><td>caption styling, transcript, honours reduced motion</td></tr>
+        <tr><td>Apps (ASL App, Lingvano)</td><td>app</td><td>-</td><td>slow-mo</td><td>replay</td><td>-</td><td>-</td><td>camera practice, multiple signers</td></tr>
+      </table>
+    </div>
+    <p class="src">No reviewed site has a mirror toggle. Handspeak, the ISL dictionaries and the Yale ASL Signbank did not load during the review.</p>
+  </section>
+
+  <!-- 1 -->
+  <section class="card">
+    <div class="card-head"><span class="tag">1</span><h2>Dictionary word page</h2></div>
+    <p>Upgrade of the current word page. Muted autoplay and loop on. Speed chips 0.25x-1x, saved between words and visits. Replay, frame step, mirror, download. No volume control (word clips have no audio).
+      A badge at the top of the video confirms each change.</p>
+    <div class="word">
+      <div class="psl-player psl--learn" id="wordPlayer" data-persist-speed
+           data-controls="seek|play,replay,frameprev,framenext,spacer,loop,mirror,fs|speeds,spacer,download">
+        <video muted autoplay loop preload="metadata"></video>
+      </div>
+      <div>
+        <div class="titles">
+          <p class="en" id="wEn"></p>
+          <p class="ur" id="wUr" lang="ur" dir="rtl"></p>
+          <p class="roman" id="wRoman"></p>
+        </div>
+        <ul class="facts tight">
+          <li>Speed chips set the speed for every clip on the site (saved in localStorage)</li>
+          <li>Loop is on by default for clips under 10s</li>
+          <li>Mirror: the learner copies the sign as if facing a mirror</li>
+          <li>Keys: <kbd>,</kbd> <kbd>.</kbd> step one frame, <kbd>Home</kbd> start, <kbd>L</kbd> loop, <kbd>R</kbd> mirror</li>
+        </ul>
+      </div>
+    </div>
+    <p class="src">Pattern from: SignASL (loop, slow, controls below), Spread The Sign (0.25-1 speeds), Auslan Signbank (no volume button), Lifeprint (frame step, keys). Mirror is new.</p>
+  </section>
+
+  <!-- 2 -->
+  <section class="card">
+    <div class="card-head"><span class="tag">2</span><h2>Variant / signer tabs</h2></div>
+    <p>One word, several signers or regional variants. Tabs swap the clip and keep speed, loop and mirror. This sample uses other colour clips as stand-ins for variants.</p>
+    <div class="tabs" role="tablist" id="variantTabs"></div>
+    <div class="psl-player psl--learn" id="variantPlayer" data-persist-speed
+         data-controls="seek|play,replay,frameprev,framenext,spacer,loop,mirror,fs|speeds">
+      <video muted autoplay loop preload="metadata"></video>
+    </div>
+    <p class="src">Pattern from: SignASL (9 clips per word), Lifeprint (signer switch), SignSchool and The ASL App (multiple signers).</p>
+  </section>
+
+  <!-- 3 -->
+  <section class="card">
+    <div class="card-head"><span class="tag">3</span><h2>Category grid with hover preview</h2></div>
+    <p>Pointer hover or keyboard focus plays a muted preview at the saved speed. Click loads the word into option 1. With "reduce motion" on, the preview does not play and only the still frame shows.</p>
+    <div class="grid" id="grid"></div>
+    <p class="src">Pattern from: DCMP (muted previews, honours <code>prefers-reduced-motion</code>), Spread The Sign (silent looping clips).</p>
+  </section>
+
+  <!-- 4 -->
+  <section class="card">
+    <div class="card-head"><span class="tag">4</span><h2>Story / lesson player</h2></div>
+    <p>Longer videos. Language switch keeps the playback position. Caption tracks (English, Urdu) and a transcript that follows the video and lets you click a line to jump to it. Loop off, speeds up to 2x.</p>
+    <div class="story">
+      <div>
+        <div class="lang tabs" role="tablist" id="langTabs">
+          <button type="button" role="tab" aria-selected="true" data-lang="en">English</button>
+          <button type="button" role="tab" aria-selected="false" data-lang="ur">Urdu</button>
+        </div>
+        <div class="psl-player psl--stacked" id="storyPlayer"
+             data-controls="seek|play,back,frameprev,framenext,mute,volume,timeboth,spacer,speed,cc,mirror,fs">
+          <video preload="metadata"></video>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-top:0">Transcript (sample text)</h3>
+        <div class="transcript" id="transcript"></div>
+      </div>
+    </div>
+    <p class="src">Pattern from: DCMP (captions, interactive transcript), Lifeprint (back 5s, frame step). Today psl.org.pk serves a separate video file per language with no captions.
+      Captions make each story accessible to hearing learners and screen-reader users (WCAG 1.2.2, 1.2.3).</p>
+  </section>
+
+  <!-- 5 -->
+  <section class="card">
+    <div class="card-head"><span class="tag">5</span><h2>Side-by-side compare</h2></div>
+    <p>Two similar signs (or two signers, or PSL beside another sign language) played in sync at the same speed. Useful for signs that are easy to confuse.</p>
+    <div class="two">
+      <div><p class="cap" id="capA"></p>
+        <div class="psl-player psl--learn" id="cmpA" data-controls="seek|play,spacer,mirror"><video muted preload="metadata"></video></div></div>
+      <div><p class="cap" id="capB"></p>
+        <div class="psl-player psl--learn" id="cmpB" data-controls="seek|play,spacer,mirror"><video muted preload="metadata"></video></div></div>
+    </div>
+    <div class="sync" id="sync">
+      <button type="button" class="primary" data-act="both">Play both from start</button>
+      <button type="button" data-act="pause">Pause both</button>
+      <span style="flex:1"></span>
+      <button type="button" data-rate="0.25">0.25x</button>
+      <button type="button" data-rate="0.5" aria-pressed="true">0.5x</button>
+      <button type="button" data-rate="1">1x</button>
+      <button type="button" data-act="loop" aria-pressed="true">Loop</button>
+    </div>
+    <p class="src">Pattern from: Spread The Sign (compare checkbox across sign languages).</p>
+  </section>
+
+  <!-- 6 -->
+  <section class="card">
+    <div class="card-head"><span class="tag">6</span><h2>Practice with camera</h2></div>
+    <p>The sign loops slowly on the left. The learner's own camera shows on the right as a mirror. Nothing is recorded or uploaded. The camera starts only after a click.</p>
+    <div class="two">
+      <div class="psl-player psl--learn" id="practicePlayer" data-persist-speed
+           data-controls="seek|play,replay,spacer,loop,mirror|speeds">
+        <video muted autoplay loop preload="metadata"></video>
+      </div>
+      <div class="cam" id="cam">
+        <div>
+          <button type="button" id="camBtn">Start camera</button>
+          <p id="camMsg">Your browser asks for camera permission.</p>
+        </div>
+      </div>
+    </div>
+    <p class="src">Pattern from: Lingvano (camera practice). Optional, highest effort. Needs HTTPS in production.</p>
+  </section>
+
+  <!-- Checklist -->
+  <section class="card">
+    <h2>Accessibility checklist (WCAG 2.2)</h2>
+    <div class="scroll">
+      <table>
+        <tr><th>Item</th><th>Rule</th><th>In this demo</th></tr>
+        <tr><td>Autoplay starts muted, and has a visible pause</td><td>1.4.2, 2.2.2</td><td>Yes. Word clips are <code>muted autoplay loop</code>.</td></tr>
+        <tr><td>No autoplay when reduced motion is set</td><td>2.2.2 (good practice)</td><td>Yes, player and grid previews.</td></tr>
+        <tr><td>Captions or text alternative</td><td>1.2.1, 1.2.2, 1.2.3</td><td>Titles in 3 scripts, caption tracks, transcript.</td></tr>
+        <tr><td>All controls work with the keyboard; single-key shortcuts only when the player has focus</td><td>2.1.1, 2.1.4</td><td>Yes.</td></tr>
+        <tr><td>Visible focus ring on dark video</td><td>2.4.7, 2.4.11</td><td>Accent outline on buttons and player.</td></tr>
+        <tr><td>Targets at least 24px, 44px on mobile</td><td>2.5.8</td><td>44px in learn layout.</td></tr>
+        <tr><td>Toggle state exposed</td><td>4.1.2</td><td><code>aria-pressed</code> on loop, mirror, speed chips, captions.</td></tr>
+        <tr><td>Icons at least 3:1 contrast</td><td>1.4.11</td><td>Controls sit on a solid bar, not on the video.</td></tr>
+        <tr><td>Visual feedback instead of sound</td><td>good practice</td><td>Badge on every speed, loop, mirror or caption change.</td></tr>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script src="psl-player.js"></script>
+<script>
+  const CDN = 'https://d2a517kx38mlos.cloudfront.net/psl/public';
+  const W = (en, ur, roman, l, vid, poster) => ({
+    en, ur, roman, src: `${CDN}/videos/${l}/720p/${vid}.mp4`, poster: `${CDN}/posters/${poster}.jpg`,
+  });
+  const WORDS = [
+    W('black', 'کالا', 'Kala', 'b', 'black_1620144486_29252', 'black_1620144486_61708'),
+    W('blue', 'نیلا', 'Neela', 'b', 'blue_1620144520_77518', 'blue_1620144520_90640'),
+    W('brown', 'بھورا', 'Bhoora', 'b', 'brown_1620144541_26614', 'brown_1620144541_74673'),
+    W('green', 'ہرا', 'Hara', 'g', 'green_1620144634_17472', 'green_1620144634_44588'),
+    W('pink', 'گلابی', 'Gulabi', 'p', 'pink_1620145938_17416', 'pink_1620145938_48485'),
+    W('red', 'لال', 'Laal', 'r', 'red_1620145977_59791', 'red_1620145977_58630'),
+    W('purple', 'جامنی', 'Jamni', 'p', 'purple_1620145957_40486', 'purple_1620145957_56658'),
+  ];
+  const STORY = {
+    en: `${CDN}/videos/a/720p/a_carrot_an_egg_and_tea_leaves_en_1624211689_69353.mp4`,
+    ur: `${CDN}/videos/a/720p/a_carrot_an_egg_and_tea_leaves_ur_1624211723_53791.mp4`,
+  };
+  const CUES = [
+    [0, 'A daughter tells her father that life is hard.'],
+    [8, 'He takes three pots of water to the stove.'],
+    [16, 'In the first pot he puts a carrot.'],
+    [24, 'In the second pot he puts an egg.'],
+    [32, 'In the third pot he puts tea leaves.'],
+    [40, 'Each faces the same boiling water.'],
+    [48, 'The carrot goes soft. The egg goes hard.'],
+    [56, 'The tea leaves change the water itself.'],
+    [64, 'Which one are you?'],
+  ];
+  const CUES_UR = ['بیٹی اپنے والد سے کہتی ہے کہ زندگی مشکل ہے۔', 'وہ پانی کے تین برتن چولہے پر رکھتے ہیں۔', 'پہلے برتن میں گاجر ڈالتے ہیں۔',
+    'دوسرے برتن میں انڈا ڈالتے ہیں۔', 'تیسرے برتن میں چائے کی پتی ڈالتے ہیں۔', 'سب کو ایک جیسا ابلتا پانی ملتا ہے۔',
+    'گاجر نرم ہو جاتی ہے۔ انڈا سخت ہو جاتا ہے۔', 'چائے کی پتی پانی کو ہی بدل دیتی ہے۔', 'آپ کون سے ہیں؟'];
+
+  const ts = (s) => `00:${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}.000`;
+  const vtt = (lines) => URL.createObjectURL(new Blob(['WEBVTT\n\n' + CUES.map(([t], i) =>
+    `${ts(t)} --> ${ts(CUES[i + 1] ? CUES[i + 1][0] : t + 8)}\n${lines[i]}`).join('\n\n')], { type: 'text/vtt' }));
+  const addTrack = (video, lang, label, lines) => {
+    const t = document.createElement('track');
+    Object.assign(t, { kind: 'captions', srclang: lang, label, src: vtt(lines) });
+    video.append(t);
+  };
+
+  const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const setClip = (video, w) => { video.poster = w.poster; video.src = w.src; };
+
+  // Tracks must exist before init so the CC button is kept
+  const storyVideo = document.querySelector('#storyPlayer video');
+  addTrack(storyVideo, 'en', 'English', CUES.map((c) => c[1]));
+  addTrack(storyVideo, 'ur', 'Urdu', CUES_UR);
+  storyVideo.src = STORY.en;
+
+  // 1. Word page
+  const wordVideo = document.querySelector('#wordPlayer video');
+  function showWord(w) {
+    setClip(wordVideo, w);
+    document.getElementById('wEn').textContent = w.en;
+    document.getElementById('wUr').textContent = w.ur;
+    document.getElementById('wRoman').textContent = w.roman;
+  }
+  showWord(WORDS[0]);
+
+  // 2. Variants
+  const variantVideo = document.querySelector('#variantPlayer video');
+  const tabs = document.getElementById('variantTabs');
+  WORDS.slice(0, 3).forEach((w, i) => {
+    const b = document.createElement('button');
+    Object.assign(b, { type: 'button', textContent: `Signer ${i + 1}` });
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', String(i === 0));
+    b.addEventListener('click', () => {
+      tabs.querySelectorAll('button').forEach((x) => x.setAttribute('aria-selected', String(x === b)));
+      setClip(variantVideo, w);
+    });
+    tabs.append(b);
+  });
+  setClip(variantVideo, WORDS[0]);
+
+  // 5. Compare
+  const [cmpA, cmpB] = [document.querySelector('#cmpA video'), document.querySelector('#cmpB video')];
+  setClip(cmpA, WORDS[4]);
+  setClip(cmpB, WORDS[5]);
+  cmpA.loop = cmpB.loop = true;
+  document.getElementById('capA').textContent = WORDS[4].en;
+  document.getElementById('capB').textContent = WORDS[5].en;
+
+  // 6. Practice
+  setClip(document.querySelector('#practicePlayer video'), WORDS[3]);
+
+  PslPlayer.initAll();
+
+  // 3. Grid with hover / focus preview
+  const grid = document.getElementById('grid');
+  WORDS.forEach((w) => {
+    const tile = document.createElement('button');
+    tile.type = 'button';
+    tile.className = 'tile';
+    tile.setAttribute('aria-label', `Open sign: ${w.en}`);
+    tile.innerHTML = `<video muted loop playsinline preload="none" poster="${w.poster}"></video>
+      <span>${w.en}<span class="ur" lang="ur" dir="rtl">${w.ur}</span></span>`;
+    const v = tile.querySelector('video');
+    const start = () => {
+      if (prefersReduced) return;
+      if (!v.src) v.src = w.src;
+      v.playbackRate = wordVideo.playbackRate;
+      v.play().catch(() => {});
+    };
+    const stop = () => { v.pause(); v.currentTime = 0; };
+    tile.addEventListener('pointerenter', start);
+    tile.addEventListener('focus', start);
+    tile.addEventListener('pointerleave', stop);
+    tile.addEventListener('blur', stop);
+    tile.addEventListener('click', () => {
+      showWord(w);
+      document.getElementById('wordPlayer').scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'center' });
+    });
+    grid.append(tile);
+  });
+
+  // 4. Story: language switch keeps time; transcript follows playback
+  document.getElementById('langTabs').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b || b.getAttribute('aria-selected') === 'true') return;
+    document.querySelectorAll('#langTabs button').forEach((x) => x.setAttribute('aria-selected', String(x === b)));
+    const t = storyVideo.currentTime, playing = !storyVideo.paused;
+    storyVideo.src = STORY[b.dataset.lang];
+    storyVideo.addEventListener('loadedmetadata', () => {
+      storyVideo.currentTime = Math.min(t, storyVideo.duration || t);
+      if (playing) storyVideo.play();
+    }, { once: true });
+  });
+  const tr = document.getElementById('transcript');
+  CUES.forEach(([t, text]) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.t = t;
+    b.innerHTML = `<time>${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}</time><span></span>`;
+    b.querySelector('span').textContent = text;
+    b.addEventListener('click', () => { storyVideo.currentTime = t; storyVideo.play(); });
+    tr.append(b);
+  });
+  storyVideo.addEventListener('timeupdate', () => {
+    let active = null;
+    tr.querySelectorAll('button').forEach((b) => { if (+b.dataset.t <= storyVideo.currentTime) active = b; });
+    tr.querySelectorAll('button').forEach((b) => b.classList.toggle('is-active', b === active));
+  });
+
+  // 5. Compare sync bar
+  const pa = document.getElementById('cmpA')._psl, pb = document.getElementById('cmpB')._psl;
+  pa.setRate(0.5, true);
+  pb.setRate(0.5, true);
+  document.getElementById('sync').addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    if (b.dataset.act === 'both') {
+      [cmpA, cmpB].forEach((v) => { v.currentTime = 0; v.play(); });
+    } else if (b.dataset.act === 'pause') {
+      cmpA.pause(); cmpB.pause();
+    } else if (b.dataset.act === 'loop') {
+      const on = !cmpA.loop;
+      cmpA.loop = cmpB.loop = on;
+      b.setAttribute('aria-pressed', String(on));
+    } else if (b.dataset.rate) {
+      const r = +b.dataset.rate;
+      pa.setRate(r); pb.setRate(r);
+      document.querySelectorAll('#sync [data-rate]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    }
+  });
+
+  // 6. Camera (local only, never recorded)
+  document.getElementById('camBtn').addEventListener('click', async () => {
+    const msg = document.getElementById('camMsg');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      const v = document.createElement('video');
+      Object.assign(v, { srcObject: stream, muted: true, autoplay: true, playsInline: true });
+      document.getElementById('cam').replaceChildren(v);
+    } catch (err) {
+      msg.textContent = 'Camera not available: ' + err.name + '. Open the page over https or localhost.';
+    }
+  });
+</script>
+</body>
+</html>

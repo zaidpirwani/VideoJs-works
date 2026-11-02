@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PSL Player Layouts</title>
+  <link rel="stylesheet" href="psl-player.css">
+  <style>
+    :root {
+      --bg: #f2f4f7; --card: #ffffff; --ink: #12161c; --muted: #5b6573; --line: #e3e7ec; --code: #f6f8fa;
+    }
+    :root[data-theme="dark"] {
+      --bg: #0b0d10; --card: #15191e; --ink: #e8ecf0; --muted: #98a2ae; --line: #262c33; --code: #1c2127;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 32px 16px 80px; }
+    h1 { font-size: 26px; margin: 0 0 4px; }
+    h2 { font-size: 18px; margin: 0; }
+    .lead { color: var(--muted); margin: 0 0 20px; }
+    .toolbar {
+      position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+      padding: 12px 16px; margin: 0 -16px 24px; background: var(--bg); border-bottom: 1px solid var(--line);
+    }
+    .toolbar label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+    .toolbar input[type="url"] { width: 280px; max-width: 100%; }
+    .toolbar input, .toolbar button {
+      font: inherit; font-size: 13px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px;
+      background: var(--card); color: var(--ink);
+    }
+    .toolbar input[type="color"] { padding: 2px; width: 40px; height: 32px; }
+    .toolbar button { cursor: pointer; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+    .card-head { display: flex; gap: 10px; align-items: baseline; margin-bottom: 6px; }
+    .tag { font-size: 12px; font-weight: 700; color: #fff; background: #3b4552; border-radius: 4px; padding: 2px 7px; }
+    .card p { margin: 0 0 14px; color: var(--muted); }
+    .stage-box { max-width: 100%; transition: max-width .2s; }
+    body.narrow .stage-box { max-width: 380px; }
+    .pc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; font-size: 14px; }
+    .pc ul { margin: 4px 0 0; padding-left: 18px; }
+    .pc strong { font-size: 13px; }
+    @media (max-width: 640px) { .pc { grid-template-columns: 1fr; } }
+    table { border-collapse: collapse; width: 100%; font-size: 14px; }
+    td, th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+    kbd { font: 12px ui-monospace, Consolas, monospace; background: var(--code); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 8px; padding: 12px; overflow-x: auto; font-size: 13px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <p><a href="sign-ux.html">Sign-language UX options &rarr;</a></p>
+  <h1>PSL video player - layout options</h1>
+  <p class="lead">Demo for devs. Native <code>&lt;video&gt;</code> plus about 250 lines of vanilla JS/CSS. No library, no gradient.
+    Options B-F put the controls below the video, so the bar never covers the signer's hands or face.</p>
+
+  <div class="toolbar">
+    <label>Accent <input type="color" id="accent" value="#01a54b"></label>
+    <label>Video URL <input type="url" id="src" placeholder="https://.../clip.mp4"></label>
+    <button type="button" id="apply">Load</button>
+    <button type="button" id="narrow">Mobile width</button>
+    <button type="button" id="theme">Dark page</button>
+  </div>
+
+  <section class="card">
+    <div class="card-head"><span class="tag">A</span><h2>Native controls, gradient removed</h2></div>
+    <p>Current tag with CSS only: <code>::-webkit-media-controls-panel { background-image: none }</code>. Left: transparent. Right: flat solid bar.</p>
+    <div class="stage-box" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <video class="psl-native" controls preload="metadata" data-demo></video>
+      <video class="psl-native psl-native--solid" controls preload="metadata" data-demo></video>
+    </div>
+    <div class="pc">
+      <div><strong>Pros</strong><ul><li>Zero JS, one CSS rule</li><li>Browser handles accessibility</li></ul></div>
+      <div><strong>Cons</strong><ul><li>Chrome/Edge/Safari only - Firefox keeps its own look</li><li>Controls stay ON the video; cannot move below</li><li>No custom buttons (loop, mirror, 0.25x)</li></ul></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><span class="tag">B</span><h2>Single-row bar below (dark)</h2></div>
+    <p>Classic layout: play, time, seek, volume, speed, loop, PiP, fullscreen in one row under the video.</p>
+    <div class="stage-box"><div class="psl-player psl--bar" data-layout="bar"><video preload="metadata" data-demo></video></div></div>
+    <div class="pc">
+      <div><strong>Pros</strong><ul><li>Familiar, compact (48px)</li><li>Full video always visible</li></ul></div>
+      <div><strong>Cons</strong><ul><li>Seek bar gets short on mobile</li></ul></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><span class="tag">C</span><h2>Stacked bar below (light)</h2></div>
+    <p>Full-width seek row on top, buttons row under it. Light theme to sit on a white page.</p>
+    <div class="stage-box"><div class="psl-player psl--stacked" data-layout="stacked"><video preload="metadata" data-demo></video></div></div>
+    <div class="pc">
+      <div><strong>Pros</strong><ul><li>Long seek bar at all widths</li><li>Room for loop, mirror, captions, back 2s</li></ul></div>
+      <div><strong>Cons</strong><ul><li>Taller (about 90px)</li></ul></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><span class="tag">D</span><h2>Seam progress</h2></div>
+    <p>Thin progress line sits on the edge between video and bar. Minimal single row of buttons.</p>
+    <div class="stage-box"><div class="psl-player psl--seam" data-layout="seam"><video preload="metadata" data-demo></video></div></div>
+    <div class="pc">
+      <div><strong>Pros</strong><ul><li>Clean, modern, compact</li><li>Seek line is full width</li></ul></div>
+      <div><strong>Cons</strong><ul><li>Thin seek target - grows on hover only</li></ul></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><span class="tag">E</span><h2>Overlay, no gradient (comparison)</h2></div>
+    <p>Controls on the video like the default, but no gradient. Icons get a drop shadow. Bar auto-hides after 2.5s while playing.</p>
+    <div class="stage-box"><div class="psl-player psl--overlay" data-layout="overlay"><video preload="metadata" data-demo></video></div></div>
+    <div class="pc">
+      <div><strong>Pros</strong><ul><li>No extra height</li></ul></div>
+      <div><strong>Cons</strong><ul><li>Covers the bottom of the frame - signer's hands</li><li>Low contrast on bright video</li></ul></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><span class="tag">F</span><h2>Learn mode - sign practice toolbar</h2></div>
+    <p>For dictionary and lesson clips. Speed chips (0.25x to 1x), loop, mirror (practise as in a mirror), back 2s, captions. Bigger 44px targets.</p>
+    <div class="stage-box"><div class="psl-player psl--learn" data-layout="learn"><video preload="metadata" data-demo data-cc></video></div></div>
+    <div class="pc">
+      <div><strong>Pros</strong><ul><li>Learner tools visible, one tap each</li><li>Audio controls de-emphasized</li></ul></div>
+      <div><strong>Cons</strong><ul><li>Tallest option (about 140px)</li><li>Mirror flips burned-in text too</li></ul></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Keyboard (custom players, when focused)</h2>
+    <table>
+      <tr><td><kbd>Space</kbd> <kbd>K</kbd></td><td>Play / pause</td><td><kbd>L</kbd></td><td>Loop</td></tr>
+      <tr><td><kbd>&larr;</kbd> <kbd>&rarr;</kbd></td><td>Seek 5s</td><td><kbd>R</kbd></td><td>Mirror</td></tr>
+      <tr><td><kbd>J</kbd></td><td>Back 2s</td><td><kbd>C</kbd></td><td>Captions</td></tr>
+      <tr><td><kbd>,</kbd> <kbd>.</kbd></td><td>Frame step (pauses)</td><td><kbd>M</kbd></td><td>Mute</td></tr>
+      <tr><td><kbd>&lt;</kbd> <kbd>&gt;</kbd></td><td>Slower / faster</td><td><kbd>F</kbd></td><td>Fullscreen</td></tr>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2>Usage</h2>
+<pre>&lt;link rel="stylesheet" href="psl-player.css"&gt;
+&lt;div class="psl-player psl--learn" data-layout="learn"&gt;
+  &lt;video src="sign.mp4" poster="sign.jpg" preload="metadata"&gt;
+    &lt;track kind="captions" src="sign.vtt" srclang="en" label="English"&gt;
+  &lt;/video&gt;
+&lt;/div&gt;
+&lt;script src="psl-player.js"&gt;&lt;/script&gt;
+&lt;script&gt;PslPlayer.initAll();&lt;/script&gt;</pre>
+    <p>Layouts: <code>bar</code>, <code>stacked</code>, <code>seam</code>, <code>overlay</code>, <code>learn</code>. Add the matching <code>psl--*</code> class. Theme via CSS variables <code>--psl-accent</code>, <code>--psl-bar-bg</code>, <code>--psl-fg</code>. Edit <code>LAYOUTS</code> in the JS to reorder buttons.</p>
+  </section>
+</div>
+
+<script src="psl-player.js"></script>
+<script>
+  const DEFAULT_SRC = 'https://vjs.zencdn.net/v/oceans.mp4';
+  const DEFAULT_POSTER = 'https://vjs.zencdn.net/v/oceans.png';
+  const VTT = 'WEBVTT\n\n00:00.000 --> 00:04.000\nSample caption / gloss: HELLO\n\n00:04.000 --> 00:09.000\nSample caption / gloss: HOW YOU\n\n00:09.000 --> 00:46.000\nSample caption / gloss: NICE MEET YOU';
+  const vttUrl = URL.createObjectURL(new Blob([VTT], { type: 'text/vtt' }));
+
+  function load(src) {
+    document.querySelectorAll('video[data-demo]').forEach((v) => {
+      v.src = src;
+      if (src === DEFAULT_SRC) v.poster = DEFAULT_POSTER; else v.removeAttribute('poster');
+    });
+  }
+
+  document.querySelectorAll('video[data-cc]').forEach((v) => {
+    const t = document.createElement('track');
+    Object.assign(t, { kind: 'captions', src: vttUrl, srclang: 'en', label: 'English' });
+    v.append(t);
+  });
+  load(DEFAULT_SRC);
+  PslPlayer.initAll();
+
+  document.getElementById('accent').addEventListener('input', (e) => {
+    document.querySelectorAll('.psl-player').forEach((p) => p.style.setProperty('--psl-accent', e.target.value));
+  });
+  document.getElementById('apply').addEventListener('click', () => {
+    const url = document.getElementById('src').value.trim();
+    load(url || DEFAULT_SRC);
+  });
+  document.getElementById('narrow').addEventListener('click', (e) => {
+    const on = document.body.classList.toggle('narrow');
+    e.target.textContent = on ? 'Full width' : 'Mobile width';
+  });
+  document.getElementById('theme').addEventListener('click', (e) => {
+    const dark = document.documentElement.dataset.theme !== 'dark';
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    e.target.textContent = dark ? 'Light page' : 'Dark page';
+  });
+</script>
+</body>
+</html>

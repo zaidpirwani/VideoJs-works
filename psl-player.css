@@ -186,6 +186,9 @@ a.psl-btn { text-decoration: none; }
   color: #fff;
   font-weight: 600;
   font-size: 14px;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  text-align: center;
   transform: translate(-50%, -6px);
   opacity: 0;
   pointer-events: none;

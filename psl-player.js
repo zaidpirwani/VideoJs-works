@@ -140,7 +140,7 @@
       const on = !root.classList.contains('is-mirror');
       set('is-mirror', on);
       press('.psl-mirror', on);
-      badge(on ? 'Mirror on' : 'Mirror off');
+      badge(on ? 'Mirror on - on-screen text is reversed' : 'Mirror off');
     };
     // Cycles: off -> track 1 -> track 2 -> ... -> off
     const toggleCC = () => {

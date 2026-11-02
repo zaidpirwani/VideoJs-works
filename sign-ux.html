@@ -133,12 +133,15 @@
         <ul class="facts tight">
           <li>Speed chips set the speed for every clip on the site (saved in localStorage)</li>
           <li>Loop is on by default for clips under 10s</li>
-          <li>Mirror: the learner copies the sign as if facing a mirror</li>
+          <li>Mirror: the learner copies the sign as if facing a mirror. Off by default. It also reverses text burned into the video (word label, PSL logo), so the badge warns about it.</li>
           <li>Keys: <kbd>,</kbd> <kbd>.</kbd> step one frame, <kbd>Home</kbd> start, <kbd>L</kbd> loop, <kbd>R</kbd> mirror</li>
         </ul>
       </div>
     </div>
     <p class="src">Pattern from: SignASL (loop, slow, controls below), Spread The Sign (0.25-1 speeds), Auslan Signbank (no volume button), Lifeprint (frame step, keys). Mirror is new.</p>
+    <p class="src"><strong>Mirror caution:</strong> PSL clips have burned-in text (word label in English and Urdu, logo). Mirroring reverses it. Options for production:
+      (a) keep mirror off by default, with the warning badge (this demo); (b) show mirror only in practice mode (option 6), where the learner focuses on the hands;
+      (c) for new recordings, export a text-free version and show the label as HTML over or beside the video, so only the signer is mirrored.</p>
   </section>
 
   <!-- 2 -->
@@ -240,6 +243,7 @@
         <tr><td>Targets at least 24px, 44px on mobile</td><td>2.5.8</td><td>44px in learn layout.</td></tr>
         <tr><td>Toggle state exposed</td><td>4.1.2</td><td><code>aria-pressed</code> on loop, mirror, speed chips, captions.</td></tr>
         <tr><td>Icons at least 3:1 contrast</td><td>1.4.11</td><td>Controls sit on a solid bar, not on the video.</td></tr>
+        <tr><td>Mirror does not hide meaning: reversed burned-in text is flagged</td><td>good practice</td><td>Mirror off by default; badge warns when it is on.</td></tr>
         <tr><td>Visual feedback instead of sound</td><td>good practice</td><td>Badge on every speed, loop, mirror or caption change.</td></tr>
       </table>
     </div>
